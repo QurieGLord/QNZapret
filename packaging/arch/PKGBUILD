@@ -1,0 +1,36 @@
+pkgname=nzapret-desktop
+pkgver=1.0.0+1
+pkgrel=1
+pkgdesc="Linux desktop controller for bundled nfqws strategy and nftables"
+arch=('x86_64' 'aarch64')
+url="${SOURCE_REPO_URL:-https://github.com/REPLACE_ME/REPLACE_ME}"
+license=('custom:unknown')
+depends=('gtk3' 'nftables')
+makedepends=('clang' 'cmake' 'flutter' 'ninja' 'pkgconf')
+_source_archive="${pkgname}-${pkgver}-source.tar.gz"
+_source_url="${SOURCE_URL:-${url}/releases/download/v${pkgver}/${_source_archive}}"
+source=("${_source_archive}::${_source_url}")
+sha256sums=('SKIP')
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  flutter pub get
+  ./build-linux.sh
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  install -dm755 "${pkgdir}/opt/${pkgname}"
+  cp -a build/linux/x64/release/bundle/. "${pkgdir}/opt/${pkgname}/"
+
+  install -dm755 "${pkgdir}/usr/bin"
+  ln -s "/opt/${pkgname}/nzapret_desktop" "${pkgdir}/usr/bin/${pkgname}"
+
+  install -Dm644 packaging/linux/nzapret-desktop.desktop \
+    "${pkgdir}/usr/share/applications/${pkgname}.desktop"
+  install -Dm644 assets/branding/nzapret-desktop.svg \
+    "${pkgdir}/usr/share/icons/hicolor/scalable/apps/${pkgname}.svg"
+  install -Dm644 README.md \
+    "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+}

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=NZapret Desktop
+Comment=Управление nfqws-стратегией и nftables на Linux
+Exec=/usr/bin/nzapret-desktop
+Icon=nzapret-desktop
+Terminal=false
+Categories=Network;System;Utility;
+Keywords=nftables;nfqws;dpi;network;linux;
+StartupNotify=true

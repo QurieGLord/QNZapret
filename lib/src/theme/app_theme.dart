@@ -36,7 +36,7 @@ class AppTheme {
       colorScheme: scheme,
       scaffoldBackgroundColor: isDark
           ? const Color(0xFF071014)
-          : const Color(0xFFF6F1E8),
+          : const Color(0xFFF4F3ED),
       fontFamily: 'Manrope',
       textTheme: textTheme.copyWith(
         displayMedium: textTheme.displayMedium?.copyWith(
@@ -55,11 +55,11 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: isDark
             ? const Color(0xFF112126).withValues(alpha: 0.82)
-            : Colors.white.withValues(alpha: 0.8),
+            : Colors.white.withValues(alpha: 0.76),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(32),
           side: BorderSide(
-            color: isDark ? const Color(0xFF25424A) : const Color(0xFFE4DACD),
+            color: isDark ? const Color(0xFF25424A) : const Color(0xFFDFE7DF),
           ),
         ),
         margin: EdgeInsets.zero,
@@ -69,17 +69,17 @@ class AppTheme {
         filled: true,
         fillColor: isDark
             ? const Color(0xFF102228).withValues(alpha: 0.94)
-            : Colors.white.withValues(alpha: 0.94),
+            : Colors.white.withValues(alpha: 0.92),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(
-            color: isDark ? const Color(0xFF29454C) : const Color(0xFFD9CCBC),
+            color: isDark ? const Color(0xFF29454C) : const Color(0xFFD6E1D8),
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(
-            color: isDark ? const Color(0xFF29454C) : const Color(0xFFD9CCBC),
+            color: isDark ? const Color(0xFF29454C) : const Color(0xFFD6E1D8),
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -102,6 +102,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(20),
           ),
           textStyle: const TextStyle(fontWeight: FontWeight.w700),
+          elevation: 0,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -111,7 +112,45 @@ class AppTheme {
             borderRadius: BorderRadius.circular(20),
           ),
           side: BorderSide(
-            color: isDark ? const Color(0xFF355860) : const Color(0xFFD8CCBC),
+            color: isDark ? const Color(0xFF355860) : const Color(0xFFD6E1D8),
+          ),
+          backgroundColor: isDark
+              ? Colors.white.withValues(alpha: 0.02)
+              : Colors.white.withValues(alpha: 0.55),
+        ),
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          padding: const WidgetStatePropertyAll(
+            EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+          ),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          ),
+          side: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return BorderSide(color: scheme.primary.withValues(alpha: 0.4));
+            }
+            return BorderSide(
+              color: isDark ? const Color(0xFF355860) : const Color(0xFFD6E1D8),
+            );
+          }),
+          backgroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return scheme.primary.withValues(alpha: isDark ? 0.22 : 0.12);
+            }
+            return isDark
+                ? Colors.white.withValues(alpha: 0.03)
+                : Colors.white.withValues(alpha: 0.6);
+          }),
+          foregroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return scheme.primary;
+            }
+            return isDark ? const Color(0xFFD5ECE7) : const Color(0xFF355258);
+          }),
+          textStyle: const WidgetStatePropertyAll(
+            TextStyle(fontWeight: FontWeight.w700),
           ),
         ),
       ),
@@ -133,7 +172,7 @@ class AppTheme {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
-      dividerColor: isDark ? const Color(0xFF1E373D) : const Color(0xFFE4DACD),
+      dividerColor: isDark ? const Color(0xFF1E373D) : const Color(0xFFDCE4DD),
     );
   }
 }

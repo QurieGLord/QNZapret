@@ -16,18 +16,26 @@ class StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final textColor = Theme.of(
       context,
     ).colorScheme.onSurface.withValues(alpha: 0.92);
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        color: isDark
+            ? color.withValues(alpha: 0.12)
+            : Colors.white.withValues(alpha: 0.72),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark
+              ? color.withValues(alpha: 0.2)
+              : color.withValues(alpha: 0.18),
+        ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -35,12 +43,27 @@ class StatusPill extends StatelessWidget {
               Icon(icon, size: 18, color: color),
               const SizedBox(width: 8),
             ],
-            Text(
-              '$label: $value',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: textColor,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: textColor.withValues(alpha: 0.64),
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: textColor,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

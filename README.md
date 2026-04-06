@@ -169,29 +169,3 @@ SOURCE_URL=file:///absolute/path/to/nzapret-desktop-1.0.0+1-source.tar.gz makepk
 rpmbuild -ba packaging/rpm/nzapret-desktop.spec \
   --define "source_url file:///absolute/path/to/nzapret-desktop-1.0.0+1-source.tar.gz"
 ```
-
-## Как лучше релизить на GitHub
-
-Практичный вариант:
-
-1. Вести версии через `pubspec.yaml`.
-2. Создавать git-теги вида `v1.0.0`.
-3. Пушить тег в GitHub.
-4. GitHub Actions из `.github/workflows/release-linux.yml` соберёт:
-   - `.deb`
-   - portable `tar.gz`
-   - source `tar.gz`
-   - workflow artifact
-   - assets для GitHub Release
-
-Итоговая схема по дистрибутивам:
-
-- Debian/Ubuntu: ставят `.deb`
-- Arch/Fedora/openSUSE: либо собирают из исходников по README, либо берут portable `tar.gz`
-
-Если позже захочешь нативное распространение по экосистемам, логичный следующий шаг:
-
-- AUR для Arch
-- COPR для Fedora
-- OBS/Open Build Service для openSUSE
-- отдельный `.rpm` через `rpmbuild` или `fpm`

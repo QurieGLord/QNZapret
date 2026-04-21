@@ -1,171 +1,110 @@
-# NZapret Desktop
+# 🛡️ NZapret Desktop
 
-Flutter-приложение для Linux поверх bundled `nfqws`-стратегии с управлением через `nftables`.
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://linux.org)
 
-## Что входит в релиз
+**NZapret Desktop** — это современный графический контроллер для Linux, работающий поверх bundled-стратегии `nfqws` (из состава проекта `zapret`). Управление правилами фильтрации трафика осуществляется через `nftables`.
 
-- `.deb` для Debian/Ubuntu-подобных систем
-- portable `tar.gz` с уже собранным Linux bundle
-- source `tar.gz` для ручной сборки на Arch, Fedora, openSUSE и других дистрибутивах
-- шаблоны `PKGBUILD` и `rpm .spec`
+---
 
-## Подготовка к сборке
+## ✨ Основные возможности
 
-Для ручной сборки нужен установленный Flutter SDK с поддержкой Linux desktop. Установите Flutter удобным для вас способом, затем проверьте toolchain:
+- 🚀 **Быстрый старт**: Запуск и остановка стратегии обхода в один клик.
+- 🛠️ **Управление через pkexec**: Безопасное выполнение привилегированных действий без запуска всего GUI от root.
+- 📦 **Всё включено**: Бинарный файл `nfqws` и вспомогательные скрипты уже в комплекте.
+- 🎨 **Современный UI**: Чистый интерфейс на Flutter с поддержкой темных и светлых тем.
 
+---
+
+## 🛠️ Подготовка и установка зависимостей
+
+Перед сборкой убедитесь, что в вашей системе установлены все необходимые инструменты.
+
+### 🐧 Arch Linux
 ```bash
-flutter config --enable-linux-desktop
-flutter doctor -v
-```
-
-После этого поставьте системные зависимости.
-
-<details>
-<summary>Arch-based</summary>
-
-```bash
+# 1. Системные зависимости
 sudo pacman -Syu --needed git clang cmake gtk3 ninja nftables pkgconf polkit util-linux-libs
+
+# 2. Установка Flutter (рекомендуется через AUR или вручную)
+# Через AUR (например, yay):
+yay -S flutter
+# Или вручную в ~/dev/flutter и добавление в PATH
 ```
 
-</details>
-
-<details>
-<summary>Fedora-based</summary>
-
+### 📦 Fedora
 ```bash
+# 1. Системные зависимости
 sudo dnf install git clang cmake gtk3-devel libblkid ninja-build nftables pkgconf-pkg-config polkit
+
+# 2. Установка Flutter (рекомендуется ручная установка)
+# Скачайте архив с сайта flutter.dev, распакуйте и добавьте в PATH.
 ```
 
-</details>
-
-<details>
-<summary>Debian-based</summary>
-
+### 🍎 Debian / Ubuntu / Mint
 ```bash
+# 1. Системные зависимости
 sudo apt-get update
 sudo apt-get install -y git clang cmake libblkid1 libgtk-3-dev libstdc++-12-dev nftables ninja-build pkg-config policykit-1
+
+# 2. Установка Flutter
+# Самый простой способ через snap:
+sudo snap install flutter --classic
+# Или ручная установка по инструкции с официального сайта.
 ```
 
-</details>
+> 💡 **Важно**: После установки Flutter обязательно выполните:
+> ```bash
+> flutter config --enable-linux-desktop
+> flutter doctor  # Убедитесь, что Linux toolchain отмечен галочкой [✓]
+> ```
 
-Что здесь важно:
+---
 
-- `nftables` нужен самому приложению во время работы.
-- `polkit` и `pkexec` нужны для privileged start/stop из UI без запуска приложения целиком от `root`.
-- пакет с `libblkid` нужен потому, что bundled `libflutter_linux_gtk.so` линкуется с `libblkid.so.1`.
+## 🚀 Сборка и установка
 
-## Простая сборка и установка приложения
+Если вы скачали исходный код, выполните следующие шаги для установки приложения в систему:
 
-1. Склонируйте репозиторий и зайдите в него.
-
-```bash
-git clone <repo-url>
-cd QNZapret
-```
-
-2. Подтяните Dart/Flutter-зависимости проекта.
-
+### 1. Подготовка Dart-пакетов
 ```bash
 flutter pub get
 ```
 
-3. Соберите release bundle.
-
+### 2. Компиляция Release-билда
 ```bash
 ./build-linux.sh
 ```
 
-Готовый bundle появится здесь:
-
+### 3. Установка в систему (в `/opt`)
 ```bash
-build/linux/x64/release/bundle/
-```
-
-4. Установите приложение как обычное desktop-приложение в `/opt`, добавьте launcher и иконку.
-
-```bash
+# Создаем директорию и копируем файлы
 sudo install -d /opt/nzapret-desktop
 sudo cp -R build/linux/x64/release/bundle/. /opt/nzapret-desktop/
+
+# Создаем символьную ссылку для запуска из терминала
 sudo ln -sf /opt/nzapret-desktop/nzapret_desktop /usr/bin/nzapret-desktop
+
+# Устанавливаем ярлык и иконку
 sudo install -Dm644 packaging/linux/nzapret-desktop.desktop /usr/share/applications/nzapret-desktop.desktop
 sudo install -Dm644 assets/branding/nzapret-desktop.svg /usr/share/icons/hicolor/scalable/apps/nzapret-desktop.svg
+
+# Важно: устанавливаем права на исполнение для внутренних скриптов
+sudo chmod +x /opt/nzapret-desktop/data/flutter_assets/assets/runtime/bin/nfqws
+sudo chmod +x /opt/nzapret-desktop/data/flutter_assets/assets/runtime/scripts/nzapret-helper.sh
 ```
 
-5. Запустите приложение из меню приложений или командой:
+---
 
-```bash
-nzapret-desktop
-```
+## 📦 Пакетные менеджеры (Alternative)
 
-## Локальная сборка release
+В репозитории доступны шаблоны для сборки нативных пакетов:
+- **Debian**: `./scripts/package-deb.sh`
+- **Arch**: `packaging/arch/PKGBUILD`
+- **Fedora/RPM**: `packaging/rpm/nzapret-desktop.spec`
 
-```bash
-flutter pub get
-./build-linux.sh
-```
+---
 
-Готовый bundle появится здесь:
+## 🤝 Благодарности
 
-```bash
-build/linux/x64/release/bundle/
-```
-
-Запуск без установки:
-
-```bash
-./build/linux/x64/release/bundle/nzapret_desktop
-```
-
-## Сборка .deb
-
-```bash
-./scripts/package-deb.sh
-```
-
-Результат:
-
-```bash
-dist/nzapret-desktop_<version>_<arch>.deb
-```
-
-Пакет ставит приложение в `/opt/nzapret-desktop`, добавляет launcher в `/usr/bin/nzapret-desktop` и `.desktop`-ярлык в меню приложений.
-
-## Полный набор release-артефактов
-
-```bash
-./scripts/build-release-artifacts.sh
-```
-
-Команда соберёт:
-
-- `.deb`
-- portable `tar.gz`
-- source `tar.gz`
-
-в директорию `dist/`.
-
-Это удобный путь для Arch и rpm-дистрибутивов: на GitHub можно брать либо исходники релиза, либо portable `tar.gz`, если не хочется собирать пакетную обвязку.
-
-## PKGBUILD и rpm spec
-
-В репозитории есть готовые шаблоны:
-
-- `packaging/arch/PKGBUILD`
-- `packaging/rpm/nzapret-desktop.spec`
-
-Оба шаблона по умолчанию ожидают source-архив релиза вида:
-
-```bash
-dist/nzapret-desktop-<version>-source.tar.gz
-```
-
-Для GitHub Releases можно оставить URL на release asset, а для локальной проверки передать свой путь:
-
-```bash
-SOURCE_URL=file:///absolute/path/to/nzapret-desktop-1.0.0+1-source.tar.gz makepkg -si
-```
-
-```bash
-rpmbuild -ba packaging/rpm/nzapret-desktop.spec \
-  --define "source_url file:///absolute/path/to/nzapret-desktop-1.0.0+1-source.tar.gz"
-```
+- Проекту [zapret](https://github.com/bol-van/zapret) за бинарный файл `nfqws` и логику обхода.
+- Сообществу Flutter за отличный фреймворк.

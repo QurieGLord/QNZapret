@@ -229,6 +229,7 @@ append_queue_rule() {
 build_ruleset() {
   cat > "$RULESET_FILE" <<EOF
 table $TABLE_FAMILY $TABLE_NAME {
+  flush table $TABLE_FAMILY $TABLE_NAME
   chain output {
     type filter hook output priority mangle; policy accept;
     meta mark & $MARK_MASK == $MARK_MASK return
